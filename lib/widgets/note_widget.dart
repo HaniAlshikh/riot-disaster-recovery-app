@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:riot_disaster_recovery_app/screens/map_screen.dart';
-import 'package:riot_disaster_recovery_app/util/toolbox.dart';
+import 'package:riot_disaster_recovery_app/widgets/map_widget.dart';
+import 'package:riot_disaster_recovery_app/widgets/widget_switcher.dart';
 
 class NoteWidget extends StatelessWidget {
   const NoteWidget({Key? key}) : super(key: key);
@@ -23,7 +23,7 @@ class NoteWidget extends StatelessWidget {
           ),
           Row(children: [
             Expanded(child: ElevatedButton(
-                onPressed: () => openScreen(context, MapScreen()),
+                onPressed: () {Navigator.pop(context);WidgetSwitcher().updateWidget(MapWidget());},
                 child: Text('done'))),
           ])
         ],

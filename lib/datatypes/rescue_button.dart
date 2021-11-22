@@ -2,7 +2,9 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:riot_disaster_recovery_app/datatypes/status.dart';
 import 'package:riot_disaster_recovery_app/providers/theme.dart';
+import 'package:riot_disaster_recovery_app/widgets/map_widget.dart';
 import 'package:riot_disaster_recovery_app/widgets/note_widget.dart';
+import 'package:riot_disaster_recovery_app/widgets/widget_switcher.dart';
 
 class RescueButton extends StatelessWidget {
 
@@ -22,6 +24,7 @@ class RescueButton extends StatelessWidget {
 
   void _sendStatus(BuildContext ctx, Status status) {
     // CoAP.sendStatus(status);
+    WidgetSwitcher().updateWidget(MapWidget());
     _openNoteDialog(ctx);
   }
 
