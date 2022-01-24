@@ -1,66 +1,112 @@
 import 'dart:async';
+import 'dart:ffi';
 import 'dart:io';
 
 import 'package:cbor/cbor.dart';
 import 'package:coap/coap.dart';
+import 'package:location/location.dart';
 import 'package:riot_disaster_recovery_app/datatypes/status.dart';
+import 'package:riot_disaster_recovery_app/util/toolbox.dart';
 
 import '../config/coap_config_all.dart';
 
 class CoAP {
+  
+  final host = '[fe80::a6cf:12ff:fe9a:1f75]';
+  final cbor = Cbor();
+  CoapClient? client;
 
-  static FutureOr<void> sendStatus(Status status) async {
-    // Create a configuration class. Logging levels can be specified in
-    // the configuration file
+  static final CoAP _coap = CoAP._internal();
+  CoAP._internal();
+
+  factory CoAP() {
     final conf = CoapConfigAll();
-    // Build the request uri, note that the request paths/query parameters can be changed
-    // on the request anytime after this initial setup.
-    const host = '[fe80::a6cf:12ff:fe9a:1f75]';
-    // const host = 'coap.me';
-    final uri = Uri(scheme: 'coap', host: host, port: conf.defaultPort);
-    // Create the client.
-    // The method we are using creates its own request so we do not
-    // need to supply one.
-    // The current request is always available from the client.
-    final client = CoapClient(uri, conf);
-    client.addressType = InternetAddressType.IPv6;
-    // Adjust the response timeout if needed, defaults to 32767 milliseconds
-    client.timeout = 10000;
-    // Create the request for the get request
-    // final request = CoapRequest.newGet();
+    final uri = Uri(scheme: 'coap', host: _coap.host, port: conf.defaultPort);
+    _coap.client = CoapClient(uri, conf);
+    _coap.client!.addressType = InternetAddressType.IPv6;
+    _coap.client!.timeout = 10000;
+    return _coap;
+  }
+
+
+  FutureOr<void> sendStatus(Status status) async {
     final request = CoapRequest.newPost();
-    // request.addUriPath('riot/board');
     request.addUriPath('status');
-    client.request = request;
-    // print('EXAMPLE - Sending get request to $host, waiting for response....');
-    // print('EXAMPLE - Sending get request to $uri, waiting for response....');
-    // print('EXAMPLE - Sending get request to ${client.endpoint}., waiting for response....');
-    // print('EXAMPLE - Sending get request to ${request.codeString}., waiting for response....');
+    client!.request = request;
 
-    // mac - status - lat - long
-    String mac = "FF:FF:FF:FF:FF";
-    double lat = 53.557030;
-    double long = 10.023090;
+    await _encodeStatusPayload(status);
 
-    final inst = Cbor();
-    final encoder = inst.encoder;
-    encoder.writeString(mac);
-    encoder.writeInt(status.value);
-    encoder.writeFloat(lat);
-    encoder.writeFloat(long);
+    final response = await client!.postBytePayload(cbor.rawOutput.getData(), CoapMediaType.any);
+    print('Received response: ');
+    print(response.payloadSize);
+    print(response.payload);
 
-    // final response = await client.get();
-    // final response = await client.post(mac); // + ',' + status + ',' + lat + ',' + long);
-    final response = await client.postBytePayload(inst.rawOutput.getData(), CoapMediaType.any);
+    // Clean up
+    // client!.close();
+  }
+
+  FutureOr<void> sendNote(String note) async {
+    final request = CoapRequest.newPost();
+    request.addUriPath('note');
+    client!.request = request;
+
+    await _encodeNotePayload(note);
+
+    final response = await client!.postBytePayload(cbor.rawOutput.getData(), CoapMediaType.any);
+    print('Received response: ');
+    // print(response.payloadSize);
+    // print(response.payload);
+
+    // Clean up
+    // client!.close();
+  }
+
+  Future<void> _encodeStatusPayload(Status status) async {
+    String id = await getDeviceID();
+    LocationData location = await getDeviceLocation();
+    int timestamp = DateTime.now().millisecondsSinceEpoch;
+
+    cbor.clearEncodedOutput();
+    final encoder = cbor.encoder;
+    encoder.writeMap(<String, Object>{
+      "id": id,
+      "status": status.value,
+      "lat": location.latitude?.toDouble() ?? 0,
+      "long": location.longitude?.toDouble() ?? 0,
+      "timestamp": timestamp,
+    });
+  }
+
+  Future<void> _encodeNotePayload(String note) async {
+    String id = await getDeviceID();
+    int timestamp = DateTime.now().millisecondsSinceEpoch;
+
+    cbor.clearEncodedOutput();
+    final encoder = cbor.encoder;
+
+    encoder.writeMap(<String, Object>{
+      "id": id,
+      "content": note,
+      "timestamp": timestamp,
+    });
+  }
+
+  FutureOr<void> get(String uriPath) async {
+    final request = CoapRequest.newGet();
+    request.addUriPath('persons');
+    client!.request = request;
+
+    final response = await client!.get();
+
     print('EXAMPLE - response received');
+    print(response.payloadSize);
+    print(response.payload);
+
     print(response.payloadString);
     print(response.statusCodeString);
 
-    // final pingok = await client.ping(10000);
-    // print(pingok);
-
-
     // Clean up
-    client.close();
+    client!.close();
   }
+
 }

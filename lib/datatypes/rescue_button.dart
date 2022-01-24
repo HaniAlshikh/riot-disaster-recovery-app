@@ -2,6 +2,9 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:riot_disaster_recovery_app/datatypes/status.dart';
 import 'package:riot_disaster_recovery_app/providers/theme.dart';
+import 'package:riot_disaster_recovery_app/util/coap.dart';
+import 'package:riot_disaster_recovery_app/util/toolbox.dart';
+import 'package:riot_disaster_recovery_app/util/wifi.dart';
 import 'package:riot_disaster_recovery_app/widgets/map_widget.dart';
 import 'package:riot_disaster_recovery_app/widgets/note_widget.dart';
 import 'package:riot_disaster_recovery_app/widgets/widget_switcher.dart';
@@ -22,9 +25,16 @@ class RescueButton extends StatelessWidget {
     );
   }
 
-  void _sendStatus(BuildContext ctx, Status status) {
-    // CoAP.sendStatus(status);
-    WidgetSwitcher().updateWidget(MapWidget());
+  Future<void> _sendStatus(BuildContext ctx, Status status) async {
+    // if (await WiFi().ensureConnected()) {
+    //   CoAP().sendStatus(status);
+    //   WidgetSwitcher().updateWidget(const MapWidget());
+    //   _openNoteDialog(ctx);
+    // } else {
+    //   print("not connected");
+    //   // TODO
+    // }
+    WidgetSwitcher().updateWidget(const MapWidget());
     _openNoteDialog(ctx);
   }
 
@@ -33,11 +43,6 @@ class RescueButton extends StatelessWidget {
         backgroundColor: Theme.of(ctx).backgroundColor,
         context: ctx, builder: (bCtx) {
       return const NoteWidget();
-      // return GestureDetector(
-      //   onTap: () {},
-      //   child: noteWidget(ctx),
-      //   behavior: HitTestBehavior.opaque,
-      // );
     });
   }
 }

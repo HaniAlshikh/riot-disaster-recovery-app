@@ -1,4 +1,12 @@
+import 'dart:io';
+
+import 'package:device_info/device_info.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:location/location.dart';
+import 'package:uuid/uuid.dart';
+import 'package:crypto/crypto.dart';
+import 'dart:convert';
 
 void openScreen(BuildContext ctx, Widget screen) {
   Navigator.of(ctx).pushAndRemoveUntil(
@@ -6,6 +14,31 @@ void openScreen(BuildContext ctx, Widget screen) {
         return screen;
       }), (Route<dynamic> route) => false
   );
+}
+
+Future<String> getDeviceID() async {
+  String id = "null";
+  final DeviceInfoPlugin deviceInfoPlugin = DeviceInfoPlugin();
+  try {
+    if (Platform.isAndroid) {
+      var build = await deviceInfoPlugin.androidInfo;
+      id = build.androidId;
+    } else if (Platform.isIOS) {
+      var data = await deviceInfoPlugin.iosInfo;
+      id = data.identifierForVendor;
+    }
+  } on PlatformException {
+    print('Failed to get platform version');
+    id = const Uuid().v4();
+  }
+
+  id = sha256.convert(utf8.encode(id)).toString().substring(0, 14);
+  return id;
+}
+
+Future<LocationData> getDeviceLocation() async {
+  Location location = Location();
+  return await location.getLocation();
 }
 
 MaterialColor createMaterialColor(Color color) {

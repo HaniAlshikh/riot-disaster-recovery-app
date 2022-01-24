@@ -13,6 +13,7 @@ class WidgetSwitcher extends ChangeNotifier {
   WidgetSwitcher._internal();
 
   void updateWidget(Widget widget) {
+    print("updating widget to $widget");
     currentWidget = widget;
     notifyListeners();
   }

@@ -4,17 +4,18 @@ import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 class GoogleMapsWidget extends StatefulWidget {
+  const GoogleMapsWidget({Key? key}) : super(key: key);
+
   @override
   State<GoogleMapsWidget> createState() => GoogleMapsWidgetState();
 }
 
 class GoogleMapsWidgetState extends State<GoogleMapsWidget> {
-  Completer<GoogleMapController> _controller = Completer();
-  Map<MarkerId, Marker> _clustersMarkers = <MarkerId, Marker>{};
-  Map<CircleId, Circle> _clustersCircles = <CircleId, Circle>{};
-
-  static final CameraPosition _kGooglePlex = CameraPosition(
-    target: LatLng(37.42796133580664, -122.085749655962),
+  final Completer<GoogleMapController> _controller = Completer();
+  final Map<MarkerId, Marker> _clustersMarkers = <MarkerId, Marker>{};
+  final Map<CircleId, Circle> _clustersCircles = <CircleId, Circle>{};
+  final CameraPosition _kGooglePlex = const CameraPosition(
+    target: LatLng(53.557030, 10.023090),
     zoom: 14.4746,
   );
 
@@ -46,38 +47,38 @@ class GoogleMapsWidgetState extends State<GoogleMapsWidget> {
 
   _getCircles() {
     setState(() {
-          CircleId circleId = CircleId("TestC");
-          _addClusterCircle(LatLng(37.42796133580664, -122.085749655962), circleId);
+          _addClusterCircle(LatLng(53.557030, 10.023090), CircleId("TestC"));
+          _addClusterCircle(LatLng(53.570184, 10.025305), CircleId("Testb"));
+          _addClusterCircle(LatLng(53.555910, 10.045575), CircleId("Testf"));
         });
   }
 
-  Future _addClusterMarker(LatLng center) async {
+  Future _addClusterMarker(LatLng center, MarkerId markerid) async {
     setState(() {
-      MarkerId markerId = MarkerId("TestM");
         Marker marker = Marker(
-            markerId: markerId,
+            markerId: markerid,
             position: center,
             draggable: true,
             consumeTapEvents: true,
             icon: BitmapDescriptor.defaultMarkerWithHue(
-                BitmapDescriptor.hueCyan),
+                BitmapDescriptor.hueGreen),
             onTap: () {
               // _changeMarkerAndCircleType(
               //     center, CircleId(markerId.value.toString()), _activeCircle);
             });
-        _clustersMarkers[markerId] = marker;
+        _clustersMarkers[marker.markerId] = marker;
       });
   }
 
   Future _addClusterCircle(LatLng center, CircleId circleId) async {
     setState(() {
-      _addClusterMarker(center);
-      CircleId circleId = CircleId("TestC2");
+      _addClusterMarker(center, MarkerId(circleId.value));
         Circle circle = Circle(
             circleId: circleId,
             center: center,
             radius: 800,
-            fillColor: Colors.cyan.withOpacity(0.3),
+            fillColor: Colors.lightGreen.withOpacity(0.3),
+            strokeColor: Colors.green,
             strokeWidth: 3,
             consumeTapEvents: true,
             onTap: () {

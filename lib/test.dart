@@ -3,11 +3,11 @@ import 'package:flutter/services.dart';
 import 'package:wifi_iot/wifi_iot.dart';
 import 'dart:io' show Platform;
 
-const String STA_DEFAULT_SSID = "STA_SSID";
-const String STA_DEFAULT_PASSWORD = "STA_PASSWORD";
+const String STA_DEFAULT_SSID = "TestAccessPoint";
+const String STA_DEFAULT_PASSWORD = "TestPassword";
 const NetworkSecurity STA_DEFAULT_SECURITY = NetworkSecurity.WPA;
 
-const String AP_DEFAULT_SSID = "AP_SSID";
+const String AP_DEFAULT_SSID = "TestAccessPoint";
 const String AP_DEFAULT_PASSWORD = "AP_PASSWORD";
 
 void main() => runApp(FlutterWifiIoT());

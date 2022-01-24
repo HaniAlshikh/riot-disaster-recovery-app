@@ -1,9 +1,24 @@
 import 'package:flutter/material.dart';
+import 'package:riot_disaster_recovery_app/util/coap.dart';
+import 'package:riot_disaster_recovery_app/util/wifi.dart';
 import 'package:riot_disaster_recovery_app/widgets/map_widget.dart';
 import 'package:riot_disaster_recovery_app/widgets/widget_switcher.dart';
 
-class NoteWidget extends StatelessWidget {
+class NoteWidget extends StatefulWidget {
   const NoteWidget({Key? key}) : super(key: key);
+
+  @override
+  State<NoteWidget> createState() => _NoteWidgetState();
+}
+
+class _NoteWidgetState extends State<NoteWidget> {
+  final noteController = TextEditingController();
+
+  @override
+  void dispose() {
+    noteController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -17,17 +32,28 @@ class NoteWidget extends StatelessWidget {
           const SizedBox(height: 20),
           const Text('would you like to add a note?'),
           const SizedBox(height: 20),
-          const Expanded(
-              child: TextField(expands: true, maxLines: null,
-                  decoration: InputDecoration(filled: true, fillColor: Colors.white10))
+          Expanded(child: TextField(
+              controller: noteController, expands: true, maxLines: null,
+              decoration: const InputDecoration(filled: true, fillColor: Colors.white10))
           ),
           Row(children: [
             Expanded(child: ElevatedButton(
-                onPressed: () {Navigator.pop(context);WidgetSwitcher().updateWidget(MapWidget());},
-                child: Text('done'))),
+                onPressed: () {_sendNote(context, noteController.text);},
+                child: const Text('done'))),
           ])
         ],
       ),
     );
+  }
+
+  Future<void> _sendNote(BuildContext ctx, String note) async {
+    // if (note.isNotEmpty && await WiFi().ensureConnected()) {
+    //   CoAP().sendNote(note);
+    // } else {
+    //   print("not connected");
+    //   // TODO
+    // }
+    Navigator.pop(context);
+    WidgetSwitcher().updateWidget(const MapWidget());
   }
 }
