@@ -4,7 +4,7 @@ import 'package:riot_disaster_recovery_app/widgets/googleMaps_widget.dart';
 import 'package:riot_disaster_recovery_app/widgets/home_widget.dart';
 import 'package:riot_disaster_recovery_app/widgets/widget_switcher.dart';
 
-
+// TODO: refactor me if still needed
 class MapWidget extends StatelessWidget {
   const MapWidget({Key? key}) : super(key: key);
 

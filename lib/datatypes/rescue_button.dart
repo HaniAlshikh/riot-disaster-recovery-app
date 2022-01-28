@@ -3,11 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:riot_disaster_recovery_app/datatypes/status.dart';
 import 'package:riot_disaster_recovery_app/providers/theme.dart';
 import 'package:riot_disaster_recovery_app/util/coap.dart';
-import 'package:riot_disaster_recovery_app/util/toolbox.dart';
-import 'package:riot_disaster_recovery_app/util/wifi.dart';
-import 'package:riot_disaster_recovery_app/widgets/map_widget.dart';
 import 'package:riot_disaster_recovery_app/widgets/note_widget.dart';
-import 'package:riot_disaster_recovery_app/widgets/widget_switcher.dart';
 
 class RescueButton extends StatelessWidget {
 
@@ -26,15 +22,8 @@ class RescueButton extends StatelessWidget {
   }
 
   Future<void> _sendStatus(BuildContext ctx, Status status) async {
-    // if (await WiFi().ensureConnected()) {
-    //   CoAP().sendStatus(status);
-    //   WidgetSwitcher().updateWidget(const MapWidget());
-    //   _openNoteDialog(ctx);
-    // } else {
-    //   print("not connected");
-    //   // TODO
-    // }
-    WidgetSwitcher().updateWidget(const MapWidget());
+    CoAP().sendStatus(status);
+    // WidgetSwitcher().updateWidget(const MapWidget()); // TODO: can't be supported no internet
     _openNoteDialog(ctx);
   }
 

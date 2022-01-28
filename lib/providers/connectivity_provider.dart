@@ -18,9 +18,6 @@ class ConnectivityProvider with ChangeNotifier {
   }
 
   init() async {
-    // _connected = await WiFi().isConnected();
-    // notifyListeners();
-
     late ConnectivityResult status;
     try {
       status = await _connectivity.checkConnectivity();
@@ -35,7 +32,6 @@ class ConnectivityProvider with ChangeNotifier {
   updateStatus(ConnectivityResult status) async {
     print("Connectivity Result changed $status");
     _connected = status == ConnectivityResult.wifi && await WiFi().isConnected();
-    // notifyListeners();
     if (!_connected) {
       WidgetSwitcher().updateWidget(const NotConnectedWidget());
     } else {

@@ -28,7 +28,7 @@ class WiFi {
 
   Future<bool> ensureConnected() async {
     if (!await isConnected()) {
-      // return await connect(); doesn't work without DHCP server
+      // return await connect(); TODO: doesn't work without DHCP server
     }
     return true;
   }
@@ -41,7 +41,6 @@ class WiFi {
     await WiFiForIoTPlugin.forceWifiUsage(true);
     return await WiFiForIoTPlugin.connect(ssid,
         password: pass,
-        // joinOnce: false,
         security: security);
   }
 
@@ -52,37 +51,4 @@ class WiFi {
     // TODO ping to check reachability
     return connected && currentSsid == ssid;
   }
-
-  // void setup() {
-  //   platform.setMethodCallHandler(call, result ->
-  //   if (call.method == "getBatteryLevel") {
-  //     val batteryLevel = getBatteryLevel()
-  //
-  //     if (batteryLevel != -1) {
-  //       result.success(batteryLevel)
-  //     } else {
-  //       result.error("UNAVAILABLE", "Battery level not available.", null)
-  //     }
-  //   } else {
-  //   result.notImplemented()
-  //   })
-  // }
-  //
-  // Future<void> _getBatteryLevel() async {
-  //   String batteryLevel;
-  //   try {
-  //     final int result = await platform.invokeMethod('getBatteryLevel');
-  //     batteryLevel = 'Battery level at $result % .';
-  //   } on PlatformException catch (e) {
-  //     batteryLevel = "Failed to get battery level: '${e.message}'.";
-  //   }
-  //
-  //   setState(() {
-  //     _batteryLevel = batteryLevel;
-  //   });
-  //
-  // void connect() {
-  //
-  // }
-
 }

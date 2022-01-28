@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:ffi';
 import 'dart:io';
 
 import 'package:cbor/cbor.dart';
@@ -12,7 +11,7 @@ import '../config/coap_config_all.dart';
 
 class CoAP {
   
-  final host = '[fe80::a6cf:12ff:fe9a:1f75]';
+  var host = '[fe80::827d:3aff:feb7:9699]'; // TODO make it dynamic macToLL()
   final cbor = Cbor();
   CoapClient? client;
 
@@ -40,9 +39,6 @@ class CoAP {
     print('Received response: ');
     print(response.payloadSize);
     print(response.payload);
-
-    // Clean up
-    // client!.close();
   }
 
   FutureOr<void> sendNote(String note) async {
@@ -54,11 +50,16 @@ class CoAP {
 
     final response = await client!.postBytePayload(cbor.rawOutput.getData(), CoapMediaType.any);
     print('Received response: ');
-    // print(response.payloadSize);
-    // print(response.payload);
+  }
 
-    // Clean up
-    // client!.close();
+  FutureOr<void> getPersons() async {
+    final request = CoapRequest.newGet();
+    request.addUriPath('persons');
+    client!.request = request;
+
+    final response = await client!.get();
+    print('Received response: ');
+    print(response.payload);
   }
 
   Future<void> _encodeStatusPayload(Status status) async {

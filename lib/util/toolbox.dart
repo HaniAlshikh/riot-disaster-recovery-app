@@ -41,6 +41,25 @@ Future<LocationData> getDeviceLocation() async {
   return await location.getLocation();
 }
 
+// TODO: how hard could it be to flip a bit flutter?? still not working
+String macToIpv6(String mac) {
+  print("Test $mac");
+  var macOctets = mac.split(":");
+  print("Test $macOctets");
+  macOctets.insert(3,'fe');
+  macOctets.insert(3,'ff');
+  
+  var num = int.parse(macOctets[0], radix: 16).toRadixString(2);
+  print(num);
+  var bitsList = num.split('');
+  bitsList[bitsList.length - 2] = bitsList[bitsList.length - 2] == "0" ? "1" : "0";
+  num = bitsList.join('');
+  print(num);
+  macOctets[0] = int.parse(num).toString();
+
+  return "fe80::${macOctets[0]}${macOctets[1]}:${macOctets[2]}${macOctets[3]}:${macOctets[4]}${macOctets[5]}:${macOctets[6]}${macOctets[7]}";
+}
+
 MaterialColor createMaterialColor(Color color) {
   List strengths = <double>[.05];
   final swatch = <int, Color>{};

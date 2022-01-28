@@ -10,6 +10,7 @@ class GoogleMapsWidget extends StatefulWidget {
   State<GoogleMapsWidget> createState() => GoogleMapsWidgetState();
 }
 
+// TODO: refactor me if still needed
 class GoogleMapsWidgetState extends State<GoogleMapsWidget> {
   final Completer<GoogleMapController> _controller = Completer();
   final Map<MarkerId, Marker> _clustersMarkers = <MarkerId, Marker>{};

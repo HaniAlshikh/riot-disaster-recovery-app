@@ -47,12 +47,6 @@ class _NoteWidgetState extends State<NoteWidget> {
   }
 
   Future<void> _sendNote(BuildContext ctx, String note) async {
-    // if (note.isNotEmpty && await WiFi().ensureConnected()) {
-    //   CoAP().sendNote(note);
-    // } else {
-    //   print("not connected");
-    //   // TODO
-    // }
     Navigator.pop(context);
     WidgetSwitcher().updateWidget(const MapWidget());
   }
